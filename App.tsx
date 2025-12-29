@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -14,6 +14,7 @@ import CourseDetailPage from './components/CourseDetailPage';
 import AdmissionsPage from './components/AdmissionsPage';
 import Login from './components/Login';
 import DashboardShell from './components/Dashboard/DashboardShell';
+import { ArrowLeft, Mail } from 'lucide-react';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<{ role: 'student' | 'teacher' | 'admin'; name: string } | null>(null);
@@ -59,6 +60,7 @@ const App: React.FC = () => {
             <Route path="/admissions" element={<AdmissionsPage />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/dashboard/*" element={user ? <DashboardShell user={user} /> : <Navigate to="/login" />} />
           </Routes>
         </main>
@@ -68,6 +70,31 @@ const App: React.FC = () => {
     </Router>
   );
 };
+
+const ForgotPasswordPage: React.FC = () => (
+  <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
+    <div className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl border border-slate-100 text-center animate-fade-in-up">
+      <div className="bg-emerald-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <Mail className="text-emerald-600 w-8 h-8" />
+      </div>
+      <h1 className="text-3xl font-serif font-bold text-emerald-950 mb-4">Reset Password</h1>
+      <p className="text-slate-500 mb-8">Enter your email address and we'll send you a link to reset your password.</p>
+      <div className="space-y-4">
+        <input 
+          type="email" 
+          placeholder="Enter your email" 
+          className="w-full px-5 py-4 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
+        />
+        <button className="w-full py-4 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all">
+          Send Reset Link
+        </button>
+      </div>
+      <Link to="/login" className="mt-8 flex items-center justify-center gap-2 text-emerald-600 font-bold hover:underline">
+        <ArrowLeft className="w-4 h-4" /> Back to Login
+      </Link>
+    </div>
+  </div>
+);
 
 const AboutPage: React.FC = () => (
   <div className="py-24 px-6 max-w-7xl mx-auto">
