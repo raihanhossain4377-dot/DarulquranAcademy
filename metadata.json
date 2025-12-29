@@ -1,0 +1,8 @@
+{
+  "name": "Darul Quran Academy",
+  "description": "A premier online Islamic educational platform dedicated to teaching Quran Tajweed, Hifz, and Islamic studies with a modern, professional interface inspired by top-tier international institutes.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
