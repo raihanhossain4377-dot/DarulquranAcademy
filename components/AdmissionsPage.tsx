@@ -1,15 +1,35 @@
 
-import React, { useState } from 'react';
-import { CheckCircle, ClipboardList, Clock, Users, Send } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { CheckCircle, ClipboardList, Clock, Users, Send, AlertCircle, X } from 'lucide-react';
 import { COURSES } from '../constants';
 
 const AdmissionsPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [submitted, setSubmitted] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState('');
+
+  useEffect(() => {
+    const courseId = searchParams.get('courseId');
+    if (courseId) {
+      setSelectedCourse(courseId);
+    }
+  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirm = () => {
+    setShowConfirmDialog(false);
     setSubmitted(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancel = () => {
+    setShowConfirmDialog(false);
   };
 
   if (submitted) {
@@ -43,7 +63,41 @@ const AdmissionsPage: React.FC = () => {
   }
 
   return (
-    <div className="pt-24 bg-white">
+    <div className="pt-24 bg-white relative">
+      {/* Confirmation Dialog Overlay */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-100 animate-fade-in-up">
+            <div className="flex justify-between items-center mb-6">
+              <div className="bg-emerald-100 p-3 rounded-2xl">
+                <AlertCircle className="w-6 h-6 text-emerald-600" />
+              </div>
+              <button onClick={handleCancel} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            <h3 className="text-2xl font-bold text-emerald-950 mb-4">Confirm Submission</h3>
+            <p className="text-slate-600 mb-8 leading-relaxed">
+              Are you sure you want to submit your application for enrollment? Please ensure all your details are correct before proceeding.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button 
+                onClick={handleCancel}
+                className="flex-1 py-3 px-6 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
+              >
+                Go Back
+              </button>
+              <button 
+                onClick={handleConfirm}
+                className="flex-1 py-3 px-6 rounded-xl font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-100 transition-all"
+              >
+                Yes, Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="bg-emerald-950 text-white py-16 px-6 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-10">
@@ -124,7 +178,12 @@ const AdmissionsPage: React.FC = () => {
 
               <div className="space-y-2">
                 <label className="text-sm font-bold text-slate-700">Select Program</label>
-                <select required className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all bg-slate-50 cursor-pointer">
+                <select 
+                  required 
+                  value={selectedCourse}
+                  onChange={(e) => setSelectedCourse(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all bg-slate-50 cursor-pointer"
+                >
                   <option value="">-- Choose a Course --</option>
                   {COURSES.map(course => (
                     <option key={course.id} value={course.id}>{course.title}</option>

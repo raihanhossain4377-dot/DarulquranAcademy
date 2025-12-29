@@ -28,6 +28,10 @@ const CourseDetailPage: React.FC = () => {
     );
   }
 
+  const handleEnroll = () => {
+    navigate(`/apply?courseId=${course.id}`);
+  };
+
   return (
     <div className="pt-24 pb-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -107,7 +111,10 @@ const CourseDetailPage: React.FC = () => {
                   <h5 className="text-2xl font-bold text-emerald-950 mb-1">Ready to start?</h5>
                   <p className="text-emerald-700">Sign up for a free trial session today.</p>
                 </div>
-                <button className="whitespace-nowrap px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all transform hover:-translate-y-1">
+                <button 
+                  onClick={handleEnroll}
+                  className="whitespace-nowrap px-8 py-4 bg-emerald-600 text-white rounded-xl font-bold shadow-xl shadow-emerald-200 hover:bg-emerald-700 transition-all transform hover:-translate-y-1 active:translate-y-0"
+                >
                   Enroll in This Course
                 </button>
               </div>

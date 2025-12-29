@@ -1,9 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book } from 'lucide-react';
+import { Menu, X, Book, LayoutDashboard, LogOut } from 'lucide-react';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  user?: { role: string; name: string } | null;
+  onLogout?: () => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ user, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -15,6 +20,9 @@ const Navbar: React.FC = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Hide Navbar on Dashboard routes
+  if (location.pathname.startsWith('/dashboard')) return null;
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -49,12 +57,27 @@ const Navbar: React.FC = () => {
               {link.name}
             </Link>
           ))}
-          <Link
-            to="/apply"
-            className="bg-emerald-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-emerald-200"
-          >
-            Apply Now
-          </Link>
+          
+          {user ? (
+            <div className="flex items-center gap-4">
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 bg-emerald-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
+              >
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+              <button onClick={onLogout} className="text-slate-400 hover:text-red-500 transition-colors">
+                <LogOut className="w-5 h-5" />
+              </button>
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-emerald-600 text-white px-6 py-2.5 rounded-full font-semibold hover:bg-emerald-700 transition-all transform hover:scale-105 active:scale-95 shadow-lg shadow-emerald-200"
+            >
+              Login / Apply
+            </Link>
+          )}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -77,13 +100,23 @@ const Navbar: React.FC = () => {
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/apply"
-              className="bg-emerald-600 text-white text-center px-6 py-3 rounded-xl font-semibold hover:bg-emerald-700"
-              onClick={() => setIsOpen(false)}
-            >
-              Apply Now
-            </Link>
+            {user ? (
+               <Link
+                to="/dashboard"
+                className="bg-emerald-600 text-white text-center px-6 py-3 rounded-xl font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                to="/login"
+                className="bg-emerald-600 text-white text-center px-6 py-3 rounded-xl font-semibold"
+                onClick={() => setIsOpen(false)}
+              >
+                Login / Apply
+              </Link>
+            )}
           </div>
         </div>
       )}

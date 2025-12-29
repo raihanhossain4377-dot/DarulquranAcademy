@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { COURSES } from '../constants';
-import { Clock, ArrowRight } from 'lucide-react';
+import { Clock, ArrowRight, Sparkles } from 'lucide-react';
 
 const Courses: React.FC = () => {
   return (
@@ -23,31 +23,45 @@ const Courses: React.FC = () => {
             <Link 
               to={`/course/${course.id}`} 
               key={course.id} 
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 flex flex-col group cursor-pointer"
+              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 flex flex-col group cursor-pointer relative"
             >
-              <div className="relative h-56 overflow-hidden">
+              <div className="relative h-64 overflow-hidden">
                 <img 
                   src={course.imageUrl} 
                   alt={course.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute top-4 left-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                
+                {/* Subtle Overlay & Enroll Button */}
+                <div className="absolute inset-0 bg-emerald-950/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
+                  <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500 flex flex-col items-center">
+                    <button className="bg-white text-emerald-900 px-8 py-3 rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl flex items-center gap-2 hover:bg-emerald-50 transition-colors">
+                      <Sparkles className="w-4 h-4" /> Enroll Now
+                    </button>
+                  </div>
+                </div>
+
+                <div className="absolute top-4 left-4 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg z-10">
                   {course.category}
                 </div>
               </div>
+
               <div className="p-8 flex-grow flex flex-col">
-                <div className="flex items-center gap-2 text-slate-400 text-sm mb-4">
-                  <Clock className="w-4 h-4" />
-                  <span>Duration: {course.duration}</span>
+                <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{course.duration} Program</span>
                 </div>
-                <h4 className="text-2xl font-bold text-emerald-950 mb-3 group-hover:text-emerald-600 transition-colors">
+                <h4 className="text-2xl font-bold text-emerald-950 mb-4 group-hover:text-emerald-600 transition-colors duration-300 leading-tight">
                   {course.title}
                 </h4>
-                <p className="text-slate-600 mb-8 flex-grow leading-relaxed">
+                <p className="text-slate-500 mb-8 flex-grow leading-relaxed text-sm">
                   {course.description}
                 </p>
-                <div className="w-full py-4 text-center rounded-xl border-2 border-emerald-100 text-emerald-700 font-bold group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 transition-all">
-                  View Details
+                <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                  <span className="text-emerald-700 font-bold text-sm">Learn More</span>
+                  <div className="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm">
+                    <ArrowRight className="w-5 h-5" />
+                  </div>
                 </div>
               </div>
             </Link>

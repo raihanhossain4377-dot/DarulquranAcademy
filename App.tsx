@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Features from './components/Features';
@@ -12,12 +12,34 @@ import Footer from './components/Footer';
 import Assistant from './components/Assistant';
 import CourseDetailPage from './components/CourseDetailPage';
 import AdmissionsPage from './components/AdmissionsPage';
+import Login from './components/Login';
+import DashboardShell from './components/Dashboard/DashboardShell';
 
 const App: React.FC = () => {
+  const [user, setUser] = useState<{ role: 'student' | 'teacher' | 'admin'; name: string } | null>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('dqa_user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+
+  const handleLogin = (role: 'student' | 'teacher' | 'admin') => {
+    const newUser = { role, name: role.charAt(0).toUpperCase() + role.slice(1) + ' User' };
+    setUser(newUser);
+    localStorage.setItem('dqa_user', JSON.stringify(newUser));
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('dqa_user');
+  };
+
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
+      <div className="flex flex-col min-h-screen bg-slate-50">
+        <Navbar user={user} onLogout={handleLogout} />
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={
@@ -36,9 +58,11 @@ const App: React.FC = () => {
             <Route path="/apply" element={<AdmissionsPage />} />
             <Route path="/admissions" element={<AdmissionsPage />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
+            <Route path="/dashboard/*" element={user ? <DashboardShell user={user} /> : <Navigate to="/login" />} />
           </Routes>
         </main>
-        <Footer />
+        {!window.location.hash.includes('dashboard') && <Footer />}
         <Assistant />
       </div>
     </Router>
